@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Book\Repositories\BookRepository;
+use App\Services\Book\Repositories\BookUsesJenssegersMongodbEloquentRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->bookBind();
     }
 
     /**
@@ -24,5 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+    }
+
+    private function bookBind()
+    {
+        $this->app->bind(
+            BookRepository::class,
+            BookUsesJenssegersMongodbEloquentRepository::class
+        );
     }
 }

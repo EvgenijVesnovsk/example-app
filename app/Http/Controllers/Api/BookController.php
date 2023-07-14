@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTOs\BookIndexDTO;
 use App\DTOs\BookStoreDTO;
 use App\DTOs\BookUpdateDTO;
 use App\Http\Controllers\Controller;
@@ -10,6 +11,7 @@ use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
+use Illuminate\Http\Request;
 use SM\SMException;
 use Symfony\Component\HttpFoundation\Response;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
@@ -27,9 +29,14 @@ class BookController extends Controller
         $this->service = $service;
     }
 
-    public function index(): BookResourceCollection
+    /**
+     * @throws CastTargetException
+     * @throws MissingCastTypeException
+     */
+    public function index(Request $request): BookResourceCollection
     {
-        $books = $this->service->list();
+        $dto = BookIndexDTO::fromRequest($request);
+        $books = $this->service->list($dto);
         return new BookResourceCollection($books);
     }
 

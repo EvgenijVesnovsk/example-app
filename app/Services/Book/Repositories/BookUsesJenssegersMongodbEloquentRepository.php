@@ -7,6 +7,16 @@ use App\Models\Book;
 class BookUsesJenssegersMongodbEloquentRepository implements BookRepository
 {
 
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Book::query();
+    }
+
+    public function queryPaginate(\Illuminate\Database\Eloquent\Builder $query, int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    {
+        return $query->paginate($perPage);
+    }
+
     public function paginate(int $limit)
     {
         return Book::paginate($limit);

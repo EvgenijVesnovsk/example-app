@@ -6,6 +6,10 @@ use App\Models\Book;
 
 interface BookRepository
 {
+    public function query(): \Illuminate\Database\Eloquent\Builder;
+
+    public function queryPaginate(\Illuminate\Database\Eloquent\Builder $query, int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
     public function paginate(int $limit);
 
     public function findOrFail($modelId);

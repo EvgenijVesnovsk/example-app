@@ -2,6 +2,7 @@
 
 namespace App\Services\Book;
 
+use App\DTOs\BookIndexDTO;
 use App\DTOs\BookStoreDTO;
 use App\DTOs\BookUpdateDTO;
 use App\Enums\BookStates;
@@ -27,9 +28,24 @@ class BookService
         $this->factory = $factory;
     }
 
-    public function list()
+    public function list(BookIndexDTO $dto): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return $this->repository->paginate(25);
+        $query = $this->repository->query();
+
+        foreach ([
+                     'title',
+                     'state',
+                 ]
+                 as $fieldName) {
+            $query->when(!empty($dto->{$fieldName}), function ($q) use ($dto, $fieldName) {
+                return $q->where($fieldName, $dto->{$fieldName});
+            });
+        }
+
+        $query->when(!empty($dto->getSort() && !empty($dto->getBy())), function ($q) use ($dto) {
+            return $q->orderBy($dto->getSort(), $dto->getBy());
+        });
+        return $this->repository->queryPaginate($query, $dto->getPerGage())->withQueryString();
     }
 
     public function get($id): Book

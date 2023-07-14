@@ -10,6 +10,7 @@ use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
+use Symfony\Component\HttpFoundation\Response;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
@@ -61,6 +62,11 @@ class BookController extends Controller
 
     public function destroy($id)
     {
-        return $this->service->delete($id);
+        $result = $this->service->delete($id);
+        [$code, $message] = $result === true ? [Response::HTTP_OK, 'Успешно удалено'] : [Response::HTTP_INTERNAL_SERVER_ERROR, 'Произошла ошибка при удалении'];
+        return response()->json([
+            'code' => $code,
+            'message' => $message
+        ]);
     }
 }

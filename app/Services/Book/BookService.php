@@ -7,18 +7,24 @@ use App\DTOs\BookUpdateDTO;
 use App\Enums\BookStates;
 use App\Models\Book;
 use App\Services\Book\Repositories\BookRepository;
+use SM\Factory\FactoryInterface;
+use SM\SMException;
+use Symfony\Component\HttpFoundation\Response;
 
 class BookService
 {
 
     private BookRepository $repository;
+    private FactoryInterface $factory;
 
     public function __construct
     (
-        BookRepository $repository
+        BookRepository   $repository,
+        FactoryInterface $factory
     )
     {
         $this->repository = $repository;
+        $this->factory = $factory;
     }
 
     public function list()
@@ -38,9 +44,22 @@ class BookService
         return $this->repository->create($data);
     }
 
+    /**
+     * @throws SMException
+     */
     public function update(BookUpdateDTO $dto, $id): Book
     {
         $book = $this->get($id);
+
+        if (!empty($dto->getState())) {
+            $stateMachine = $this->factory->get($book, 'book');
+            try {
+                $stateMachine->can($dto->getState());
+            } catch (\Exception $e) {
+                throw new \Exception('Нельзя изменить статус', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+
         $this->repository->update($dto->getData(), $book);
         return $book->refresh();
     }

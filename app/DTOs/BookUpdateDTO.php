@@ -71,4 +71,9 @@ class BookUpdateDTO extends ValidatedDTO
     {
         return $this->validatedData;
     }
+
+    public function getState(): ?string
+    {
+        return $this->state ?? null;
+    }
 }

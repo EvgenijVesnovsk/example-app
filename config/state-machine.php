@@ -3,7 +3,7 @@
 return [
     'audio' => [
         'class' => App\Models\Book::class,
-        'graph' => 'audio',
+        'graph' => 'book',
         'property_path' => App\Models\Book::STATE,
         'metadata' => [
             'title' => 'Agreement stage',

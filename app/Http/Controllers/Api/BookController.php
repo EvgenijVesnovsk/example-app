@@ -10,6 +10,7 @@ use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
+use SM\SMException;
 use Symfony\Component\HttpFoundation\Response;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
@@ -52,6 +53,7 @@ class BookController extends Controller
     /**
      * @throws CastTargetException
      * @throws MissingCastTypeException
+     * @throws SMException
      */
     public function update(UpdateRequest $request, $id): BookResource
     {

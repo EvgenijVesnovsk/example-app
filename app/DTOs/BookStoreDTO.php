@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Models\Book;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class BookStoreDTO extends ValidatedDTO
@@ -12,7 +13,11 @@ class BookStoreDTO extends ValidatedDTO
     protected function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'max:255', function ($attribute, $value, $fail) {
+                if (!empty(Book::where(Book::TITLE, $value)->first())) {
+                    $fail('Книга с таким названием уже существует.');
+                }
+            }],
         ];
     }
 

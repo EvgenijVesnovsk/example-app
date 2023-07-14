@@ -3,6 +3,7 @@
 namespace App\DTOs;
 
 use App\Enums\BookStates;
+use App\Models\Book;
 use Illuminate\Validation\Rules\Enum;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
@@ -14,8 +15,11 @@ class BookUpdateDTO extends ValidatedDTO
     protected function rules(): array
     {
         return [
-            'title' => ['string', 'max:255'],
-            'state' => [new Enum(BookStates::class)],
+            'title' => ['max:255', function ($attribute, $value, $fail) {
+                if (!empty(Book::where(Book::TITLE, $value)->first())) {
+                    $fail('Книга с таким названием уже существует.');
+                }
+            }], 'state' => [new Enum(BookStates::class)],
         ];
     }
 

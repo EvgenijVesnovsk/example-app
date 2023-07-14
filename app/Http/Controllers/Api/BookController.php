@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Book\StoreRequest;
+use App\Http\Requests\Book\UpdateRequest;
 use App\Http\Resources\Book\BookResource;
 use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -32,13 +33,13 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
-    public function store(Request $request): BookResource
+    public function store(StoreRequest $request): BookResource
     {
         $book = $this->service->create($request->all());
         return new BookResource($book);
     }
 
-    public function update(Request $request, $id): BookResource
+    public function update(UpdateRequest $request, $id): BookResource
     {
         $book = $this->service->update($request->all(), $id);
         return new BookResource($book);

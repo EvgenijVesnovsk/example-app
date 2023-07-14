@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Book\BookResource;
+use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
 use Illuminate\Http\Request;
 
@@ -18,28 +20,28 @@ class BookController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(): BookResourceCollection
     {
         $books = $this->service->list();
-        return $books;
+        return new BookResourceCollection($books);
     }
 
-    public function show($id)
+    public function show($id): BookResource
     {
         $book = $this->service->get($id);
-        return $book;
+        return new BookResource($book);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): BookResource
     {
         $book = $this->service->create($request->all());
-        return $book;
+        return new BookResource($book);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): BookResource
     {
         $book = $this->service->update($request->all(), $id);
-        return $book;
+        return new BookResource($book);
     }
 
     public function destroy($id)

@@ -66,17 +66,16 @@ class BookController extends Controller
 
     /**
      * @throws InvalidArgumentException
-     * @throws SMException
      */
     public function update(UpdateRequest $request, $id): BookResource
     {
         try {
             $dto = new BookUpdateDTO($request->all());
+            $book = $this->service->update($dto, $id);
         } catch (\Exception $e) {
             throw new InvalidArgumentException($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $book = $this->service->update($dto, $id);
         return new BookResource($book);
     }
 

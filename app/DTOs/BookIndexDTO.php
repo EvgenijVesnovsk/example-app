@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class BookIndexDTO extends ValidatedDTO
@@ -9,8 +10,8 @@ class BookIndexDTO extends ValidatedDTO
     public string $sort;
     public string $by;
     public int $per_page;
-    public int $title;
-    public int $state;
+    public string $title;
+    public string $state;
 
     /**
      * Defines the validation rules for the DTO.
@@ -31,7 +32,11 @@ class BookIndexDTO extends ValidatedDTO
      */
     protected function defaults(): array
     {
-        return [];
+        return [
+            'sort' => 'updated_at',
+            'by' => 'desc',
+            'per_page' => 25,
+        ];
     }
 
     /**
@@ -39,7 +44,9 @@ class BookIndexDTO extends ValidatedDTO
      */
     protected function casts(): array
     {
-        return [];
+        return [
+            'per_page' => new IntegerCast()
+        ];
     }
 
     /**

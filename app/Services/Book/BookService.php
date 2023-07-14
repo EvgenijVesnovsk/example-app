@@ -66,13 +66,11 @@ class BookService
 
         if (!empty($dto->getState())) {
             $stateMachine = $this->factory->get($book, 'book');
-            try {
-                $stateMachine->can($dto->getState());
-            } catch (\Exception $e) {
+            $can = $stateMachine->can($dto->getState());
+            if ($can === false) {
                 throw new \Exception('Нельзя изменить статус', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
-
         $this->repository->update($dto->getData(), $book);
         return $book->refresh();
     }

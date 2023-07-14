@@ -60,7 +60,9 @@ class BookUpdateDTO extends ValidatedDTO
      */
     public function messages(): array
     {
-        return [];
+        return [
+            'state' => ['Статус указан неверно'],
+        ];
     }
 
     /**

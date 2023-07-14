@@ -2,6 +2,9 @@
 
 namespace App\Services\Book;
 
+use App\DTOs\BookStoreDTO;
+use App\DTOs\BookUpdateDTO;
+use App\Enums\BookStates;
 use App\Models\Book;
 use App\Services\Book\Repositories\BookRepository;
 
@@ -28,15 +31,17 @@ class BookService
         return $this->repository->findOrFail($id);
     }
 
-    public function create(array $data): Book
+    public function create(BookStoreDTO $dto): Book
     {
+        $data = $dto->getData();
+        $data[Book::STATE] = BookStates::DRAFT->value;
         return $this->repository->create($data);
     }
 
-    public function update(array $data, $id): Book
+    public function update(BookUpdateDTO $dto, $id): Book
     {
         $book = $this->get($id);
-        $this->repository->update($data, $book);
+        $this->repository->update($dto->getData(), $book);
         return $book->refresh();
     }
 

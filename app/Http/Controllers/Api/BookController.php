@@ -13,7 +13,6 @@ use App\Http\Resources\Book\BookResource;
 use App\Http\Resources\Book\BookResourceCollection;
 use App\Services\Book\BookService;
 use Illuminate\Http\Request;
-use SM\SMException;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
@@ -79,7 +78,7 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\JsonResponse
     {
         $result = $this->service->delete($id);
         [$code, $message] = $result === true ? [Response::HTTP_OK, 'Успешно удалено'] : [Response::HTTP_INTERNAL_SERVER_ERROR, 'Произошла ошибка при удалении'];

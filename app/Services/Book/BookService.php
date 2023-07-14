@@ -6,6 +6,7 @@ use App\DTOs\BookIndexDTO;
 use App\DTOs\BookStoreDTO;
 use App\DTOs\BookUpdateDTO;
 use App\Enums\BookStates;
+use App\Events\BookUpdatedEvent;
 use App\Models\Book;
 use App\Services\Book\Repositories\BookRepository;
 use SM\Factory\FactoryInterface;
@@ -72,7 +73,9 @@ class BookService
             }
         }
         $this->repository->update($dto->getData(), $book);
-        return $book->refresh();
+        $book = $book->refresh();
+        event(new BookUpdatedEvent($dto, $book));
+        return $book;
     }
 
     public function delete($id): bool

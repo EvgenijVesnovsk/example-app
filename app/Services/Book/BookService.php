@@ -32,11 +32,7 @@ class BookService
     {
         $query = $this->repository->query();
 
-        foreach ([
-                     'title',
-                     'state',
-                 ]
-                 as $fieldName) {
+        foreach (['title', 'state'] as $fieldName) {
             $query->when(!empty($dto->{$fieldName}), function ($q) use ($dto, $fieldName) {
                 return $q->where($fieldName, $dto->{$fieldName});
             });
@@ -62,6 +58,7 @@ class BookService
 
     /**
      * @throws SMException
+     * @throws \Exception
      */
     public function update(BookUpdateDTO $dto, $id): Book
     {

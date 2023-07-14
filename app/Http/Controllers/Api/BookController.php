@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\DTOs\BookIndexDTO;
 use App\DTOs\BookStoreDTO;
 use App\DTOs\BookUpdateDTO;
+use App\Exceptions\InvalidArgumentException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\StoreRequest;
 use App\Http\Requests\Book\UpdateRequest;
@@ -14,8 +15,6 @@ use App\Services\Book\BookService;
 use Illuminate\Http\Request;
 use SM\SMException;
 use Symfony\Component\HttpFoundation\Response;
-use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
-use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
 class BookController extends Controller
 {
@@ -30,12 +29,16 @@ class BookController extends Controller
     }
 
     /**
-     * @throws CastTargetException
-     * @throws MissingCastTypeException
+     * @throws InvalidArgumentException
      */
     public function index(Request $request): BookResourceCollection
     {
-        $dto = BookIndexDTO::fromRequest($request);
+        try {
+            $dto = BookIndexDTO::fromRequest($request);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $books = $this->service->list($dto);
         return new BookResourceCollection($books);
     }
@@ -47,24 +50,32 @@ class BookController extends Controller
     }
 
     /**
-     * @throws CastTargetException
-     * @throws MissingCastTypeException
+     * @throws InvalidArgumentException
      */
     public function store(StoreRequest $request): BookResource
     {
-        $dto = new BookStoreDTO($request->all());
+        try {
+            $dto = new BookStoreDTO($request->all());
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $book = $this->service->create($dto);
         return new BookResource($book);
     }
 
     /**
-     * @throws CastTargetException
-     * @throws MissingCastTypeException
+     * @throws InvalidArgumentException
      * @throws SMException
      */
     public function update(UpdateRequest $request, $id): BookResource
     {
-        $dto = new BookUpdateDTO($request->all());
+        try {
+            $dto = new BookUpdateDTO($request->all());
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $book = $this->service->update($dto, $id);
         return new BookResource($book);
     }
